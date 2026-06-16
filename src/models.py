@@ -6,7 +6,7 @@ from sklearn.model_selection import GridSearchCV
 def train_baseline_model(X_train: pd.DataFrame, y_train: pd.Series) -> DecisionTreeClassifier:
 
     print("\n [2/4] Trenowanie modelu bazowego (Decision Tree)...")
-    dt_model = DecisionTreeClassifier(random_state=42)
+    dt_model = DecisionTreeClassifier(max_depth = 15, random_state=42)
     dt_model.fit(X_train, y_train)
     return dt_model
 
@@ -20,7 +20,8 @@ def train_tuned_random_forest(X_train: pd.DataFrame, y_train: pd.Series) -> Rand
         'max_depth': [10, 20, None],
         'min_samples_split': [2, 5]
     }
-
+  
+    #grid_search = GridSearchCV(estimator=rf_base, param_grid=param_grid, cv=3, scoring='f1', n_jobs=-1)
     grid_search = GridSearchCV(estimator=rf_base, param_grid=param_grid, cv=3, scoring='f1', n_jobs=-1)
     grid_search.fit(X_train, y_train)
 

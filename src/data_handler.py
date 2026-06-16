@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 KOLUMNY = [
     'duration', 'protocol_type', 'service', 'flag', 'src_bytes',
@@ -23,7 +24,19 @@ def load_and_preprocess_data(url_train: str, url_test: str) -> tuple:
     print("[1/4] Pobieranie i przygotowanie danych")
     df_train = pd.read_csv(url_train, header=None, names=KOLUMNY)
     df_test = pd.read_csv(url_test, header=None, names=KOLUMNY)
+    
+    print(f"Liczba unikalnych ataków: TRENINGOWY = {df_train[df_train['label'] != 'normal']['label'].nunique()}, TESTOWY = {df_test[df_test['label'] != 'normal']['label'].nunique()}")
 
+    print("\n--- Top 10 najczęstszych ataków ---")
+    train_attacks = df_train[df_train['label'] != 'normal']['label']
+    test_attacks = df_test[df_test['label'] != 'normal']['label']
+    
+    print("Zbiór TRENINGOWY:")
+    print(train_attacks.value_counts().head(10).to_string())
+    print("\nZbiór TESTOWY:")
+    print(test_attacks.value_counts().head(10).to_string())
+    print("-----------------------------------\n")
+    
     df_train = df_train.drop(columns=['difficulty'])
     df_test = df_test.drop(columns=['difficulty'])
 
@@ -50,3 +63,4 @@ def load_and_preprocess_data(url_train: str, url_test: str) -> tuple:
     X_test_encoded[num_cechy] = scaler.transform(X_test_encoded[num_cechy])
 
     return X_train_encoded, X_test_encoded, y_train, y_test
+
